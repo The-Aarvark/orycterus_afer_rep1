@@ -1,0 +1,90 @@
+import re
+from datetime import datetime
+
+class CellMetadata:
+    def __init__(self, value, row, column, is_bold=False, has_border=False, is_superscript=False, is_split=False, 
+                 footnote_keys=None, indentation_level=0, cell_position=None, 
+                 agency=None, bureau=None, collection=None, release=None, table=None, 
+                 column_name=None, value_attributes=None, merged_cell_parent=None):
+        self.value = value  # The actual content of the cell
+        self.row = row  # Row coordinate of the cell
+        self.column = column  # Column coordinate of the cell
+        self.is_bold = is_bold  # Indicates if the cell text is bold
+        self.has_border = has_border  # Indicates if the cell has borders
+        self.is_superscript = is_superscript  # Indicates if the cell contains superscript characters
+        self.is_split = is_split  # Indicates if the cell value is split with "/"
+        self.footnote_keys = footnote_keys or []  # List of footnote keys associated with the cell
+        self.indentation_level = indentation_level  # Indentation level of the cell content
+        self.cell_position = cell_position  # Position of the cell (header, body, footer, annotation key)
+        self.agency = agency  # Federal agency associated with the data
+        self.bureau = bureau  # Bureau within the agency
+        self.collection = collection  # Data collection name
+        self.release = release  # Release name or identifier
+        self.table = table  # Table name or identifier
+        self.column_name = column_name  # Column name or identifier
+        self.value_attributes = value_attributes or {}  # Additional attributes like errors, suppression flags, etc.
+        self.merged_cell_parent = merged_cell_parent  # Coordinates of the parent cell if this cell is part of a merged range
+
+    def is_int(self):
+        try:
+            return float(self.value.replace(',', '')) == int(float(self.value.replace(',', '')))
+        except ValueError:
+            return False
+
+    def is_float(self):
+        try:
+            float(self.value.replace(',', ''))
+            return True
+        except ValueError:
+            return False
+
+    def is_iso_date(self):
+        try:
+            datetime.fromisoformat(self.value)
+            return True
+        except ValueError:
+            return False
+
+    def predicate_type(self):
+        if self.is_int():
+            return 'INT'
+        elif self.is_float():
+            return 'FLOAT'
+        elif self.is_iso_date():
+            return 'ISO_DATE'
+        else:
+            return 'STRING'
+
+    def __repr__(self):
+        return (f"CellMetadata(value={self.value}, row={self.row}, column={self.column}, is_bold={self.is_bold}, "
+                f"has_border={self.has_border}, is_superscript={self.is_superscript}, is_split={self.is_split}, "
+                f"footnote_keys={self.footnote_keys}, indentation_level={self.indentation_level}, "
+                f"cell_position={self.cell_position}, agency={self.agency}, bureau={self.bureau}, "
+                f"collection={self.collection}, release={self.release}, table={self.table}, "
+                f"column_name={self.column_name}, value_attributes={self.value_attributes}, "
+                f"merged_cell_parent={self.merged_cell_parent}, predicate_type={self.predicate_type()})")
+
+# Example usage
+cell = CellMetadata(
+    value="2023-06-20",
+    row=1,
+    column=2,
+    is_bold=True,
+    has_border=True,
+    is_superscript=False,
+    is_split=False,
+    footnote_keys=["a", "b"],
+    indentation_level=1,
+    cell_position="body",
+    agency="US Census Bureau",
+    bureau="Population Division",
+    collection="Current Population Survey",
+    release="2023 Annual Social and Economic Supplement",
+    table="Table A-1",
+    column_name="Population",
+    value_attributes={"error_margin": "±2%", "suppression_flag": False},
+    merged_cell_parent=(0, 2)  # Example coordinates of the parent cell in case of merged cells
+)
+
+print(cell)
+print("Predicate type:", cell.predicate_type())
