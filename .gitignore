@@ -100,3 +100,4 @@ dmypy.json
 general_utilities/my_secrets.py
 general_utilities/
 logs/
+popest_scrape.py
