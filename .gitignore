@@ -1,5 +1,7 @@
 # Virtual environment
 venv/
+.env/
+.env.local
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -24,20 +26,75 @@ develop-eggs/
 lib/
 lib64/
 pip-wheel-metadata/
-*.egg-info/
 
 # Logs and databases
 *.log
 *.sql
 *.sqlite
+*.sqlite3
+*.db
+*.db-journal
+*.dat
+*.pdb
+*.tgz
+*.gz
+*.bz2
 
 # Secrets
-config/my_secrets.txt
+config/*.txt
+config/*.json
+config/*.yaml
+config/*.yml
+config/*.env
+config/secrets/
+config/*.key
+config/*.pem
 
-# Environment
-.env
-.env.local
-.output.responses 
+# Data output
+output/
+output.responses/
+output_data/
+data/
+datasets/
+tmp/
+temp/
 
-# databases
-links_database_db
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# System files
+.DS_Store
+Thumbs.db
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pylint
+.pylint.d
+
+# Pyre type checker
+.pyre/
+general_utilities/my_secrets.py
