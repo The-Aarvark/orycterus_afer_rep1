@@ -98,3 +98,4 @@ dmypy.json
 # Pyre type checker
 .pyre/
 general_utilities/my_secrets.py
+general_utilities/
