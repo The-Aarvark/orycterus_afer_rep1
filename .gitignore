@@ -2,7 +2,9 @@
 venv/
 .env/
 .env.local
-
+# Ignore working notebooks
+WIP_*.ipynb
+*.ipynb
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
