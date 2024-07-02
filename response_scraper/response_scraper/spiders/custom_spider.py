@@ -1,3 +1,5 @@
+# response_scraper/response_scraper/spiders/custom_spider.py
+
 import scrapy
 from scrapy.http import HtmlResponse
 import os
@@ -5,6 +7,7 @@ import json
 from datetime import datetime
 import hashlib
 from urllib.parse import urlparse
+
 
 class CustomSpider(scrapy.Spider):
     name = "custom_spider"
@@ -47,8 +50,7 @@ class CustomSpider(scrapy.Spider):
             return
 
         url = response.url
-
-        # Log the URL with timestamp
+        self.visited_urls.add(url)
         self.log(f"Scraped URL: {url} - {datetime.now()}")
 
         # Save the response
@@ -62,7 +64,6 @@ class CustomSpider(scrapy.Spider):
                     yield response.follow(link, self.parse, meta={'depth': depth + 1})
 
     def is_valid_link(self, link):
-        # Exclude files that are not HTML/XML and links with '?'
         if '?' in link:
             return False
 
@@ -81,16 +82,11 @@ class CustomSpider(scrapy.Spider):
         url_hash = hashlib.md5(url.encode()).hexdigest()
         parsed_url = urlparse(url)
         domain = parsed_url.netloc.replace("www.", "")
-        if not os.path.exists('output.responses'):
-            os.makedirs('output.responses')
-        filepath = f'output.responses/{domain}-{url_hash}.html'
+        if not os.path.exists('output/responses'):
+            os.makedirs('output/responses')
+        filepath = f'output/responses/{domain}-{url_hash}.html'
         with open(filepath, 'wb') as f:
             f.write(response.body)
-
-    def get_depth(self, url):
-        # Calculate the depth of the URL
-        parsed_url = urlparse(url)
-        return len(parsed_url.path.strip('/').split('/'))
 
     def closed(self, reason):
         self.log(f"Spider closed at {datetime.now()} due to: {reason}")
@@ -110,7 +106,7 @@ class CustomSpider(scrapy.Spider):
         url_hash = hashlib.md5(url.encode()).hexdigest()
         parsed_url = urlparse(url)
         domain = parsed_url.netloc.replace("www.", "")
-        filepath = f'output.responses/{domain}-{url_hash}.html'
+        filepath = f'output/responses/{domain}-{url_hash}.html'
         
         if os.path.exists(filepath):
             self.log(f"Loading URL from file: {url}")

@@ -1,3 +1,5 @@
+# general_utilities/embedder.py
+
 import requests
 import json
 import pandas as pd
@@ -28,7 +30,7 @@ class TextEmbedder:
             return model.encode(text)
         else:
             return model.encode([text])
-    
+
     @staticmethod
     def co_sim(question_vector, list_of_vectors):
         """
@@ -39,6 +41,7 @@ class TextEmbedder:
         :return: The cosine similarities.
         """
         return cosine_similarity([question_vector], list_of_vectors)
+
     @staticmethod
     def compare(vector1, vector2):
         """
@@ -96,28 +99,34 @@ class TextEmbedder:
         min_index = distances.argmin()
         return min_index, distances[min_index]
 
-# Example usage
-if __name__ == "__main__":
-    texts = ["This is a test sentence.", "Here is another sentence.", "This sentence is similar to the first sentence."]
-    
-    # Embedding single text
-    single_text = "This is a test sentence."
-    single_vector = TextEmbedder.embed(single_text)
-    print("Single Embedding Vector:")
-    print(single_vector)
-    
-    # Embedding list of texts
-    vectors = TextEmbedder.embed(texts)
-    print("\nEmbedding Vectors for List of Texts:")
-    for vector in vectors:
-        print(vector)
+    @classmethod
+    def embed_soup(cls, soup_text):
+        """
+        Embed the full soup text.
 
-    distance = TextEmbedder.compare(vectors[0], vectors[1])
-    print("\nCosine Distance between the first and second vectors:", distance)
-    
-    reduced_vectors = TextEmbedder.reduce(vectors)
-    print("\nReduced Vectors:")
-    print(reduced_vectors)
+        :param soup_text: The soup text to be embedded.
+        :return: The embedding vector of the soup text.
+        """
+        return cls.embed(soup_text)
 
-    index, closest_distance = TextEmbedder.find_closest(vectors[0], vectors[1:])
-    print(f"\nClosest vector to the first vector is at index {index + 1} with a distance of {closest_distance}")
+    @classmethod
+    def embed_link(cls, url, names):
+        """
+        Embed the URL and list of names for links.
+
+        :param url: The URL of the link.
+        :param names: The list of names (anchor texts) of the link.
+        :return: The embedding vector of the link.
+        """
+        text_to_embed = url + " " + " ".join(names)
+        return cls.embed(text_to_embed)
+
+    @classmethod
+    def embed_form(cls, form_text):
+        """
+        Embed the form text.
+
+        :param form_text: The form text to be embedded.
+        :return: The embedding vector of the form text.
+        """
+        return cls.embed(form_text)

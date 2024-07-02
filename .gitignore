@@ -34,3 +34,10 @@ pip-wheel-metadata/
 # Secrets
 config/my_secrets.txt
 
+# Environment
+.env
+.env.local
+.output.responses 
+
+# databases
+links_database_db
